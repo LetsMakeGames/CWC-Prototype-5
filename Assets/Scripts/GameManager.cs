@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI livesText;
+    public TextMeshProUGUI titleText;
 
     public int lastPos;
     public int score;
@@ -23,10 +25,9 @@ public class GameManager : MonoBehaviour
     {
         score = 0;
         lives = 3;
-        gameOver = false;
+        gameOver = true;
         scoreText.text = "Score: " + score;
         livesText.text = "Lives: " + lives;
-        StartCoroutine(SpawnTarget());
     }
 
     // Update is called once per frame
@@ -78,5 +79,18 @@ public class GameManager : MonoBehaviour
             lives -= livesToTake;
             livesText.text = "Lives: " + lives;
         }
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void PlayGame()
+    {
+        titleText.gameObject.SetActive(false);
+        gameOver = false;
+        StartCoroutine(SpawnTarget());
+        
     }
 }

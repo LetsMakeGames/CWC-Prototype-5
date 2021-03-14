@@ -93,14 +93,17 @@ public class Target : MonoBehaviour
     {
         if (!gameManagerScript.gameOver)
         {
-            gameManagerScript.UpdateScore(pointValue);
             Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
             Destroy(gameObject);
-        }
 
-        if (gameObject.name == "Bad 1(Clone)")
-        {
-            gameManagerScript.UpdateLives(1);
+            if (gameObject.name != "Bad 1(Clone)")
+            {
+                gameManagerScript.UpdateScore(pointValue);
+            }else
+            {
+                gameManagerScript.UpdateLives(1);
+            }
+
         }
 
     }
