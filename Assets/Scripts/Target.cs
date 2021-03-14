@@ -5,6 +5,7 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
     private GameManager gameManagerScript;
+    private AudioManager audioManager;
     private Rigidbody targetRB;
     private int uVelocity;
     private int tVelocity;
@@ -23,6 +24,9 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        audioManager = GameObject.Find("Audio Manager").GetComponent<AudioManager>();
+
         gameManagerScript = GameObject.Find("Game Manager").GetComponent<GameManager>();
         gameManagerScript.lastPos = xRange;
 
@@ -99,9 +103,11 @@ public class Target : MonoBehaviour
             if (gameObject.name != "Bad 1(Clone)")
             {
                 gameManagerScript.UpdateScore(pointValue);
+                audioManager.PlaySound(1);
             }else
             {
                 gameManagerScript.UpdateLives(1);
+                audioManager.PlaySound(0);
             }
 
         }
