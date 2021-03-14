@@ -4,24 +4,27 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
-    private GameObject gameManager;
+    private GameManager gameManagerScript;
     private Rigidbody targetRB;
     private int uVelocity;
     private int tVelocity;
     private int xRange = 4;
     private int ySpawnPos = -6;
     private Vector3 torque;
+    private bool isValid = false;
 
 
     public int uVelocityMin = 12;
     public int uVelocityMax = 18;
     public int torqueRange = 10;
+    public int pointValue = 5;
+    public ParticleSystem explosionParticle;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.Find("Game Manager");
-        gameManager.GetComponent<GameManager>().lastPos = xRange;
+        gameManagerScript = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        gameManagerScript.lastPos = xRange;
 
         // Get current object RB
         targetRB = GetComponent<Rigidbody>();
@@ -77,22 +80,53 @@ public class Target : MonoBehaviour
 
     int RandomX(int range)
     {
-        while (gameManager.GetComponent<GameManager>().lastPos == range)
+        while (gameManagerScript.lastPos == range)
         {
             range = Random.Range(-xRange, xRange);
         }
 
-        gameManager.GetComponent<GameManager>().lastPos = range;
+        gameManagerScript.GetComponent<GameManager>().lastPos = range;
         return range;
     }
 
     private void OnMouseDown()
     {
-        Destroy(gameObject);
+        if (!gameManagerScript.gameOver)
+        {
+            gameManagerScript.UpdateScore(pointValue);
+            Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+            Destroy(gameObject);
+        }
+
+        if (gameObject.name == "Bad 1(Clone)")
+        {
+            gameManagerScript.UpdateLives(1);
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Destroy(gameObject);
+        if (other.gameObject.name == "Sensor Top")
+        {
+            isValid = true;
+        }
+
+        if (other.gameObject.name == "Sensor" && isValid)
+        {
+            Destroy(gameObject);
+            if (gameObject.name != "Bad 1(Clone)")
+            {
+                gameManagerScript.UpdateLives(1);
+            }
+            Debug.Log(gameObject.name);
+        }
+
+        if (other.gameObject.name == "Sensor Bottom")
+        {
+            Destroy(gameObject);
+        }
+
+
     }
 }
